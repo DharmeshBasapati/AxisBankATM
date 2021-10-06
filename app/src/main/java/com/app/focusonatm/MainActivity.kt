@@ -1,11 +1,17 @@
 package com.app.focusonatm
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.app.focusonatm.BasicBankData.BANK_BALANCE
+import com.app.focusonatm.BasicBankData.BANK_ID
+import com.app.focusonatm.BasicBankData.NOTES_OF_100
+import com.app.focusonatm.BasicBankData.NOTES_OF_200
+import com.app.focusonatm.BasicBankData.NOTES_OF_2000
+import com.app.focusonatm.BasicBankData.NOTES_OF_500
 import com.app.focusonatm.databinding.ActivityMainBinding
 import com.app.focusonatm.room.builder.DatabaseBuilder
 import com.app.focusonatm.room.dao.FocusDao
@@ -17,20 +23,22 @@ import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var transactions: List<Transactions>
     private var currentNotesOf100: Int = 0
     private var currentNotesOf200: Int = 0
     private var currentNotesOf500: Int = 0
     private var currentNotesOf2000: Int = 0
-    private lateinit var focusDao: FocusDao
-    private var bankDataFromDB: Bank? = null
-    private lateinit var binding: ActivityMainBinding
+
     var notesOf100 = 0
     var notesOf200 = 0
     var notesOf500 = 0
     var notesOf2000 = 0
 
     var totalAmountInBank = 0
+
+    private var bankDataFromDB: Bank? = null
+    private lateinit var focusDao: FocusDao
+    private lateinit var transactions: List<Transactions>
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,32 +52,33 @@ class MainActivity : AppCompatActivity() {
             if (binding.edtWithdrawAmount.text.toString().isNotEmpty()) {
 
                 val withdrawAmount = Integer.parseInt(binding.edtWithdrawAmount.text.toString())
-                Log.d("TAG", "onCreate: Withdraw Amount - $withdrawAmount")
 
                 if (withdrawAmount <= totalAmountInBank) {
+
                     if (withdrawAmount.toString().endsWith("00")) {
-                        calculator(withdrawAmount)
+
+                        withDrawCalculator(withdrawAmount)
                         updatedNotesUI(withdrawAmount)
+
                         binding.edtWithdrawAmount.text?.clear()
+                        binding.textFieldWithdrawAmount.helperText = null
+
                     } else {
-                        Toast.makeText(
-                            this,
-                            "Please enter 100, 200, 500, 2000 related amount.",
-                            Toast.LENGTH_SHORT
-                        ).show()
+
+                        showErrorMessage(getString(R.string.msg_enter_amount_in_multiples_of_100))
+
                     }
 
                 } else {
-                    Toast.makeText(
-                        this,
-                        "You cant withdraw currently.",
-                        Toast.LENGTH_SHORT
-                    ).show()
+
+                    showErrorMessage(getString(R.string.msg_insufficient_balance))
+
                 }
 
-
             } else {
-                return@setOnClickListener
+
+                showErrorMessage(getString(R.string.msg_enter_withdraw_amount))
+
             }
 
 
@@ -77,24 +86,32 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun showErrorMessage(errorMessage: String) {
+        binding.textFieldWithdrawAmount.helperText = errorMessage
+        binding.textFieldWithdrawAmount.setHelperTextColor(ColorStateList.valueOf(Color.RED))
+    }
+
     private fun setupBank() {
 
         GlobalScope.launch(Dispatchers.IO) {
 
             focusDao = DatabaseBuilder.getDBInstance(applicationContext).focusDao()
+
             bankDataFromDB = focusDao.getBankDetails()
-            Log.d("TAG", "setupBank: $bankDataFromDB")
+
             if (bankDataFromDB == null) {
+
                 focusDao.addNotesToBank(
                     Bank(
-                        1,
-                        50000,
-                        75,
-                        50,
-                        25,
-                        10
+                        BANK_ID,
+                        BANK_BALANCE,
+                        NOTES_OF_100,
+                        NOTES_OF_200,
+                        NOTES_OF_500,
+                        NOTES_OF_2000
                     )
                 )
+
                 bankDataFromDB = focusDao.getBankDetails()
 
             }
@@ -106,13 +123,13 @@ class MainActivity : AppCompatActivity() {
 
             GlobalScope.launch(Dispatchers.Main) {
 
-                bankDataFromDB?.let { it1 -> setupNotesUI(it1) }
+                bankDataFromDB?.let { bankData -> setupNotesUI(bankData) }
 
                 if (transactions.isNotEmpty()) {
-                    transactions.let { it2 -> setupLastTransactionUI(it2[it2.size - 1]) }
+                    setupLastTransactionUI(transactions[transactions.size - 1])
+                    updateTransactionsList()
                 }
 
-                updateTransactionsList()
             }
 
         }
@@ -123,10 +140,12 @@ class MainActivity : AppCompatActivity() {
     private fun updatedNotesUI(withdrawAmount: Int) {
 
         GlobalScope.launch(Dispatchers.IO) {
+
             totalAmountInBank -= withdrawAmount
+
             focusDao.addNotesToBank(
                 Bank(
-                    1,
+                    BANK_ID,
                     totalAmountInBank,
                     notesOf100,
                     notesOf200,
@@ -134,6 +153,7 @@ class MainActivity : AppCompatActivity() {
                     notesOf2000
                 )
             )
+
             bankDataFromDB = focusDao.getBankDetails()
 
             focusDao.addTransactions(
@@ -145,31 +165,26 @@ class MainActivity : AppCompatActivity() {
                     notesOf2000 = currentNotesOf2000
                 )
             )
+
             transactions = ArrayList()
             transactions = focusDao.getAllTransactions()
-            Log.d(
-                "TAG",
-                "updatedNotesUI: Last Transaction = ${transactions[transactions.size - 1]}"
-            )
-        }.invokeOnCompletion {
 
+        }.invokeOnCompletion {
 
             GlobalScope.launch(Dispatchers.Main) {
 
                 bankDataFromDB?.let { it1 -> setupNotesUI(it1) }
 
                 if (transactions.isNotEmpty()) {
-                    transactions.let { it2 -> setupLastTransactionUI(it2[it2.size - 1]) }
+                    setupLastTransactionUI(transactions[transactions.size - 1])
+                    updateTransactionsList()
                 }
-
 
                 currentNotesOf2000 = 0
                 currentNotesOf500 = 0
                 currentNotesOf200 = 0
                 currentNotesOf100 = 0
 
-                //Add or Update RV
-                updateTransactionsList()
             }
 
         }
@@ -183,7 +198,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.rvTransactions.adapter = transactionsAdapter
 
-        transactionsAdapter.notifyDataSetChanged()
+        transactionsAdapter.notifyItemRangeChanged(0, transactions.size)
 
     }
 
@@ -218,50 +233,36 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun calculator(withdrawAmount: Int) {
+    private fun withDrawCalculator(withdrawAmount: Int) {
 
         var updatedAmount = withdrawAmount
-        Log.d("TAG", "updatedAmount: $updatedAmount")
 
         when {
             updatedAmount >= 2000 && notesOf2000 > 0 -> {
-                Log.d("TAG", "calculator: In 2000")
                 updatedAmount -= 2000
                 notesOf2000 -= 1
                 currentNotesOf2000 += 1
-                calculator(updatedAmount)
+                withDrawCalculator(updatedAmount)
             }
             updatedAmount >= 500 && notesOf500 > 0 -> {
-                Log.d("TAG", "calculator: In 500")
                 updatedAmount -= 500
                 notesOf500 -= 1
                 currentNotesOf500 += 1
-                calculator(updatedAmount)
+                withDrawCalculator(updatedAmount)
             }
             updatedAmount >= 200 && notesOf200 > 0 -> {
-                Log.d("TAG", "calculator: In 200")
                 updatedAmount -= 200
                 notesOf200 -= 1
                 currentNotesOf200 += 1
-                calculator(updatedAmount)
+                withDrawCalculator(updatedAmount)
             }
             updatedAmount >= 100 && notesOf100 > 0 -> {
-                Log.d("TAG", "calculator: In 100")
                 updatedAmount -= 100
                 notesOf100 -= 1
                 currentNotesOf100 += 1
-                calculator(updatedAmount)
-            }
-            updatedAmount in 1..99 -> {
-                Log.d("TAG", "calculator: Less than 100")
-                Toast.makeText(
-                    this,
-                    "Please enter 100, 200, 500, 2000 related amount",
-                    Toast.LENGTH_SHORT
-                ).show()
+                withDrawCalculator(updatedAmount)
             }
         }
     }
-
 
 }

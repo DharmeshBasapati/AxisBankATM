@@ -144,28 +144,32 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btnWithdraw"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Withdraw" />
+        android:layout_marginHorizontal="25dp"
+        android:paddingVertical="10dp"
+        android:text="Withdraw"
+        app:cornerRadius="20dp"
+        app:elevation="10dp" />
 
     <TextView
         android:id="@+id/tvLastTransactions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:layout_marginTop="10dp"
         android:text="Last Transactions"
         android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:visibility="gone" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cvLastTransactions"
         android:layout_width="match_parent"
-        android:visibility="gone"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
+        android:visibility="gone"
         app:cardUseCompatPadding="true">
 
         <LinearLayout
@@ -276,18 +280,18 @@
         android:id="@+id/tvYourTransactions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:layout_marginTop="10dp"
         android:text="Your Transactions"
         android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:visibility="gone" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cvYourTransactions"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
+        android:visibility="gone"
         app:cardUseCompatPadding="true">
 
         <androidx.recyclerview.widget.RecyclerView
