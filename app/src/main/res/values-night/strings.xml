@@ -3,4 +3,13 @@
     <string name="msg_enter_amount_in_multiples_of_100">Please enter amount in multiples of 100.</string>
     <string name="msg_insufficient_balance">Unable to withdraw due to insufficient balance in your account.</string>
     <string name="msg_enter_withdraw_amount">Please enter withdraw amount.</string>
+    <string name="label_atm_amount">ATM Amount</string>
+    <string name="label_rs_100">Rs. 100</string>
+    <string name="label_rs_200">Rs. 200</string>
+    <string name="label_rs_500">Rs. 500</string>
+    <string name="label_rs_2000">Rs. 2000</string>
+    <string name="hint_enter_your_withdraw_amount">Enter your withdraw amount</string>
+    <string name="label_withdraw">Withdraw</string>
+    <string name="label_last_transactions">Last Transactions</string>
+    <string name="label_your_transactions">Your Transactions</string>
 </resources>

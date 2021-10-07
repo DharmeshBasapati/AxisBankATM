@@ -1,9 +1,11 @@
 package com.app.focusonatm
 
+import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,43 +31,41 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnWithdraw.setOnClickListener {
 
-            if (binding.edtWithdrawAmount.text.toString().isNotEmpty()) {
-
-                val withdrawAmount = Integer.parseInt(binding.edtWithdrawAmount.text.toString())
-
-                if (withdrawAmount <= mainViewModel.totalAmountInBank) {
-
-                    if (withdrawAmount % 100 == 0) {
-
-                        mainViewModel.withDrawCalculator(withdrawAmount)
-                        updateNotesAndTransactionsUI(withdrawAmount)
-
-                        binding.edtWithdrawAmount.text?.clear()
-                        binding.textFieldWithdrawAmount.helperText = null
-
-                    } else {
-                        showErrorMessage(getString(R.string.msg_enter_amount_in_multiples_of_100))
-                    }
-
-                } else {
-                    showErrorMessage(getString(R.string.msg_insufficient_balance))
-                }
-
-            } else {
-                showErrorMessage(getString(R.string.msg_enter_withdraw_amount))
-            }
+            mainViewModel.validateAmount()
 
         }
+
+        binding.edtWithdrawAmount.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                val imm: InputMethodManager =
+                    getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(binding.edtWithdrawAmount.windowToken, 0)
+            }
+        }
+
+        mainViewModel.getWithdrawAmount().observe(this, {
+
+            updateNotesAndTransactionsUI(Integer.parseInt(it))
+            binding.edtWithdrawAmount.clearFocus()
+
+        })
+
+        mainViewModel.getErrorMessage().observe(this, {
+
+            showErrorMessage(it)
+
+        })
 
     }
 
     private fun setupViewModel() {
 
         mainViewModel = ViewModelProvider(
-            this,
-            ViewModelFactory(DatabaseBuilder.getDBInstance(applicationContext).focusDao())
-        )
-            .get(MainViewModel::class.java)
+            this, ViewModelFactory(DatabaseBuilder.getDBInstance(applicationContext).focusDao())
+        ).get(MainViewModel::class.java)
+
+        binding.mainViewModel = mainViewModel
+        binding.lifecycleOwner = this
 
         mainViewModel.setupInitialBankDetails()
         mainViewModel.fetchTransactionsListFromDB()

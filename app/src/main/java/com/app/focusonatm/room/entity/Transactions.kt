@@ -12,8 +12,4 @@ data class Transactions(
     val notesOf200: Int,
     val notesOf500: Int,
     val notesOf2000: Int,
-) {
-
-
-
-}
+)

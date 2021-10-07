@@ -12,21 +12,31 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(private val focusDao: FocusDao) : ViewModel() {
 
-    var currentNotesOf100: Int = 0
-    var currentNotesOf200: Int = 0
-    var currentNotesOf500: Int = 0
-    var currentNotesOf2000: Int = 0
+    private var currentNotesOf100: Int = 0
+    private var currentNotesOf200: Int = 0
+    private var currentNotesOf500: Int = 0
+    private var currentNotesOf2000: Int = 0
 
-    var notesOf100 = 0
-    var notesOf200 = 0
-    var notesOf500 = 0
-    var notesOf2000 = 0
+    private var notesOf100 = 0
+    private var notesOf200 = 0
+    private var notesOf500 = 0
+    private var notesOf2000 = 0
 
-    var totalAmountInBank = 0
+    private var totalAmountInBank = 0
+
+    val edtWithdrawAmount = MutableLiveData<String>()
+
+    private val validWithdrawAmount = MutableLiveData<String>()
+
+    private val errorMessage = MutableLiveData<String>()
 
     private val bankData = MutableLiveData<Bank>()
 
     private val transactionsData = MutableLiveData<List<Transactions>>()
+
+    fun getWithdrawAmount(): LiveData<String> = validWithdrawAmount
+
+    fun getErrorMessage(): LiveData<String> = errorMessage
 
     fun getBankData(): LiveData<Bank> = bankData
 
@@ -117,7 +127,7 @@ class MainViewModel(private val focusDao: FocusDao) : ViewModel() {
 
     }
 
-    fun withDrawCalculator(withdrawAmount: Int) {
+    private fun withDrawCalculator(withdrawAmount: Int) {
 
         var updatedAmount = withdrawAmount
 
@@ -154,6 +164,33 @@ class MainViewModel(private val focusDao: FocusDao) : ViewModel() {
         currentNotesOf500 = 0
         currentNotesOf200 = 0
         currentNotesOf100 = 0
+    }
+
+    fun validateAmount() {
+
+        if (edtWithdrawAmount.value != null && edtWithdrawAmount.value!!.isNotEmpty()) {
+
+            val withdrawAmount = Integer.parseInt(edtWithdrawAmount.value!!)
+
+            if (withdrawAmount <= totalAmountInBank) {
+
+                if (withdrawAmount != 0 && withdrawAmount % 100 == 0) {
+
+                    withDrawCalculator(withdrawAmount)
+                    edtWithdrawAmount.postValue("")
+                    validWithdrawAmount.postValue(withdrawAmount.toString())
+                    errorMessage.postValue("")
+
+                } else {
+                    errorMessage.postValue("Please enter amount in multiples of 100.")
+                }
+
+            } else {
+                errorMessage.postValue("Unable to withdraw due to insufficient balance in your account.")
+            }
+        } else {
+            errorMessage.postValue("Please enter withdraw amount.")
+        }
     }
 
 }
