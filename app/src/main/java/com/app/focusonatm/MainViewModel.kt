@@ -28,7 +28,7 @@ class MainViewModel(private val focusDao: FocusDao) : ViewModel() {
 
     private val validWithdrawAmount = MutableLiveData<String>()
 
-    private val errorMessage = MutableLiveData<String>()
+    val errorMessage = MutableLiveData("")
 
     private val bankData = MutableLiveData<Bank>()
 
@@ -36,11 +36,37 @@ class MainViewModel(private val focusDao: FocusDao) : ViewModel() {
 
     fun getWithdrawAmount(): LiveData<String> = validWithdrawAmount
 
-    fun getErrorMessage(): LiveData<String> = errorMessage
-
     fun getBankData(): LiveData<Bank> = bankData
 
     fun getTransactionsList(): LiveData<List<Transactions>> = transactionsData
+
+    fun validateAmount() {
+
+        if (edtWithdrawAmount.value != null && edtWithdrawAmount.value!!.isNotEmpty()) {
+
+            val withdrawAmount = Integer.parseInt(edtWithdrawAmount.value!!)
+
+            if (withdrawAmount <= totalAmountInBank) {
+
+                if (withdrawAmount != 0 && withdrawAmount % 100 == 0) {
+
+                    withDrawCalculator(withdrawAmount)
+                    edtWithdrawAmount.postValue("")
+                    validWithdrawAmount.postValue(withdrawAmount.toString())
+                    errorMessage.value = ""
+
+                } else {
+                    errorMessage.value = "Please enter amount in multiples of 100."
+                }
+
+            } else {
+                errorMessage.value =
+                    "Unable to withdraw due to insufficient balance in your account."
+            }
+        } else {
+            errorMessage.value = "Please enter withdraw amount."
+        }
+    }
 
     fun setupInitialBankDetails() {
 
@@ -166,31 +192,5 @@ class MainViewModel(private val focusDao: FocusDao) : ViewModel() {
         currentNotesOf100 = 0
     }
 
-    fun validateAmount() {
-
-        if (edtWithdrawAmount.value != null && edtWithdrawAmount.value!!.isNotEmpty()) {
-
-            val withdrawAmount = Integer.parseInt(edtWithdrawAmount.value!!)
-
-            if (withdrawAmount <= totalAmountInBank) {
-
-                if (withdrawAmount != 0 && withdrawAmount % 100 == 0) {
-
-                    withDrawCalculator(withdrawAmount)
-                    edtWithdrawAmount.postValue("")
-                    validWithdrawAmount.postValue(withdrawAmount.toString())
-                    errorMessage.postValue("")
-
-                } else {
-                    errorMessage.postValue("Please enter amount in multiples of 100.")
-                }
-
-            } else {
-                errorMessage.postValue("Unable to withdraw due to insufficient balance in your account.")
-            }
-        } else {
-            errorMessage.postValue("Please enter withdraw amount.")
-        }
-    }
 
 }

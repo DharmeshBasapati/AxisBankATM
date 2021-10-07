@@ -50,12 +50,6 @@ class MainActivity : AppCompatActivity() {
 
         })
 
-        mainViewModel.getErrorMessage().observe(this, {
-
-            showErrorMessage(it)
-
-        })
-
     }
 
     private fun setupViewModel() {
@@ -93,11 +87,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun showErrorMessage(errorMessage: String) {
-        binding.textFieldWithdrawAmount.helperText = errorMessage
-        binding.textFieldWithdrawAmount.setHelperTextColor(ColorStateList.valueOf(Color.RED))
-    }
-
     private fun updateNotesAndTransactionsUI(withdrawAmount: Int) {
         mainViewModel.updateBankDetails(withdrawAmount)
         mainViewModel.addNewTransactionToDB(withdrawAmount)
@@ -111,25 +100,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupLastTransactionUI(lastTransaction: Transactions) {
-        binding.tvATMAmountLT.text = lastTransaction.transAmount.toString()
-        binding.tv100NotesLT.text = lastTransaction.notesOf100.toString()
-        binding.tv200NotesLT.text = lastTransaction.notesOf200.toString()
-        binding.tv500NotesLT.text = lastTransaction.notesOf500.toString()
-        binding.tv2000NotesLT.text = lastTransaction.notesOf2000.toString()
+        binding.lastTransactionLayout.tvATMAmount.text = lastTransaction.transAmount.toString()
+        binding.lastTransactionLayout.tv100Notes.text = lastTransaction.notesOf100.toString()
+        binding.lastTransactionLayout.tv200Notes.text = lastTransaction.notesOf200.toString()
+        binding.lastTransactionLayout.tv500Notes.text = lastTransaction.notesOf500.toString()
+        binding.lastTransactionLayout.tv2000Notes.text = lastTransaction.notesOf2000.toString()
 
         binding.tvLastTransactions.visibility = View.VISIBLE
-        binding.cvLastTransactions.visibility = View.VISIBLE
+        binding.lastTransactionLayout.cvNotes.visibility = View.VISIBLE
 
         binding.tvYourTransactions.visibility = View.VISIBLE
         binding.cvYourTransactions.visibility = View.VISIBLE
     }
 
     private fun setupNotesUI(bank: Bank) {
-        binding.tvATMAmount.text = bank.totalAmount.toString()
-        binding.tv100Notes.text = bank.notesOf100.toString()
-        binding.tv200Notes.text = bank.notesOf200.toString()
-        binding.tv500Notes.text = bank.notesOf500.toString()
-        binding.tv2000Notes.text = bank.notesOf2000.toString()
+        binding.bankNotesLayout.tvATMAmount.text = bank.totalAmount.toString()
+        binding.bankNotesLayout.tv100Notes.text = bank.notesOf100.toString()
+        binding.bankNotesLayout.tv200Notes.text = bank.notesOf200.toString()
+        binding.bankNotesLayout.tv500Notes.text = bank.notesOf500.toString()
+        binding.bankNotesLayout.tv2000Notes.text = bank.notesOf2000.toString()
     }
 
 }
