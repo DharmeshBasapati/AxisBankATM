@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:bind="http://schemas.android.com/apk/res-auto">
 
     <data>
 
         <variable
             name="mainViewModel"
             type="com.app.focusonatm.MainViewModel" />
+
+        <variable
+            name="bankData"
+            type="com.app.focusonatm.room.entity.Bank" />
 
     </data>
 
@@ -21,11 +25,13 @@
         tools:context=".MainActivity">
 
         <include
+            bind:bankData="@{bankData}"
             android:id="@+id/bankNotesLayout"
             layout="@layout/notes_layout" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textFieldWithdrawAmount"
+            style="?attr/textInputOutlinedDenseStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="10dp"
@@ -37,7 +43,9 @@
             app:boxCornerRadiusTopEnd="5dp"
             app:boxCornerRadiusTopStart="5dp"
             app:helperText="@{mainViewModel.errorMessage}"
-            app:helperTextTextColor="@color/red">
+            app:helperTextTextColor="@color/colorPrimary"
+            app:placeholderText="E.g. 100, 200, 500, or, 2000"
+            app:placeholderTextColor="#939393">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtWithdrawAmount"
@@ -47,7 +55,9 @@
                 android:inputType="number"
                 android:maxLength="5"
                 android:singleLine="true"
+                android:onTextChanged="@{mainViewModel.onTextChanged}"
                 android:text="@={mainViewModel.edtWithdrawAmount}"
+                android:textColor="@color/colorPrimary"
                 android:textStyle="bold" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -58,7 +68,8 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="25dp"
             android:paddingVertical="10dp"
-            android:text="@string/label_withdraw"
+            android:text="@={mainViewModel.btnWithdrawAmountText}"
+            android:textStyle="bold"
             app:cornerRadius="20dp"
             app:elevation="10dp" />
 
@@ -68,11 +79,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:text="@string/label_last_transactions"
+            android:textColor="@color/colorPrimary"
             android:textSize="18sp"
             android:textStyle="bold"
             android:visibility="gone" />
 
         <include
+            bind:bankData="@{bankData}"
             android:id="@+id/lastTransactionLayout"
             layout="@layout/notes_layout"
             android:visibility="gone" />
@@ -83,6 +96,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:text="@string/label_your_transactions"
+            android:textColor="@color/colorPrimary"
             android:textSize="18sp"
             android:textStyle="bold"
             android:visibility="gone" />

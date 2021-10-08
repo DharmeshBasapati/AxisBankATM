@@ -1,8 +1,6 @@
 package com.app.focusonatm
 
 import android.content.Context
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -26,28 +24,29 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupViewModel()
-
         setupObserver()
 
-        binding.btnWithdraw.setOnClickListener {
+        binding.apply {
 
-            mainViewModel.validateAmount()
+            rvTransactions.layoutManager = LinearLayoutManager(this@MainActivity)
 
-        }
-
-        binding.edtWithdrawAmount.setOnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
-                val imm: InputMethodManager =
-                    getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(binding.edtWithdrawAmount.windowToken, 0)
+            btnWithdraw.setOnClickListener {
+                mainViewModel!!.validateAmount()
             }
+
+            edtWithdrawAmount.setOnFocusChangeListener { _, hasFocus ->
+                if (!hasFocus) {
+                    val imm: InputMethodManager =
+                        getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(edtWithdrawAmount.windowToken, 0)
+                }
+            }
+
         }
 
         mainViewModel.getWithdrawAmount().observe(this, {
-
             updateNotesAndTransactionsUI(Integer.parseInt(it))
             binding.edtWithdrawAmount.clearFocus()
-
         })
 
     }
@@ -69,16 +68,24 @@ class MainActivity : AppCompatActivity() {
     private fun setupObserver() {
 
         mainViewModel.getBankData().observe(this, {
-
-            it?.let { bankData -> setupNotesUI(bankData) }
-
+            binding.bankNotesLayout.bankData = it
         })
 
-        mainViewModel.getTransactionsList().observe(this, {
+        mainViewModel.getTransactionsList().observe(this, { transactionsList ->
 
-            it?.let {
+            val trans = transactionsList.last()
+            val bank = Bank(
+                2,
+                trans.transAmount,
+                trans.notesOf100,
+                trans.notesOf200,
+                trans.notesOf500,
+                trans.notesOf2000
+            )
+            binding.lastTransactionLayout.bankData = bank
+
+            transactionsList?.let {
                 if (it.isNotEmpty()) {
-                    setupLastTransactionUI(it[it.size - 1])
                     updateTransactionsList(it)
                 }
             }
@@ -93,32 +100,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateTransactionsList(list: List<Transactions>) {
-        binding.rvTransactions.layoutManager = LinearLayoutManager(this)
-        val transactionsAdapter = TransactionsAdapter(list)
-        binding.rvTransactions.adapter = transactionsAdapter
-        transactionsAdapter.notifyItemRangeChanged(0, list.size)
-    }
+        binding.apply {
+            tvLastTransactions.visibility = View.VISIBLE
+            lastTransactionLayout.cvNotes.visibility = View.VISIBLE
 
-    private fun setupLastTransactionUI(lastTransaction: Transactions) {
-        binding.lastTransactionLayout.tvATMAmount.text = lastTransaction.transAmount.toString()
-        binding.lastTransactionLayout.tv100Notes.text = lastTransaction.notesOf100.toString()
-        binding.lastTransactionLayout.tv200Notes.text = lastTransaction.notesOf200.toString()
-        binding.lastTransactionLayout.tv500Notes.text = lastTransaction.notesOf500.toString()
-        binding.lastTransactionLayout.tv2000Notes.text = lastTransaction.notesOf2000.toString()
+            tvYourTransactions.visibility = View.VISIBLE
+            cvYourTransactions.visibility = View.VISIBLE
 
-        binding.tvLastTransactions.visibility = View.VISIBLE
-        binding.lastTransactionLayout.cvNotes.visibility = View.VISIBLE
+            val transactionsAdapter = TransactionsAdapter(list)
+            rvTransactions.adapter = transactionsAdapter
 
-        binding.tvYourTransactions.visibility = View.VISIBLE
-        binding.cvYourTransactions.visibility = View.VISIBLE
-    }
-
-    private fun setupNotesUI(bank: Bank) {
-        binding.bankNotesLayout.tvATMAmount.text = bank.totalAmount.toString()
-        binding.bankNotesLayout.tv100Notes.text = bank.notesOf100.toString()
-        binding.bankNotesLayout.tv200Notes.text = bank.notesOf200.toString()
-        binding.bankNotesLayout.tv500Notes.text = bank.notesOf500.toString()
-        binding.bankNotesLayout.tv2000Notes.text = bank.notesOf2000.toString()
+            transactionsAdapter.notifyItemRangeChanged(0, list.size)
+        }
     }
 
 }

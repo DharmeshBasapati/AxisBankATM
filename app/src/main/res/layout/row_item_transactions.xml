@@ -1,109 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="transactions"
+            type="com.app.focusonatm.room.entity.Transactions" />
+    </data>
 
     <LinearLayout
-        android:id="@+id/lnrHeaders"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginTop="10dp">
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tvATMAmountLabel"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:id="@+id/lnrHeaders"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1.5"
-            android:text="ATM Amount"
-            android:textStyle="bold" />
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="10dp">
 
-        <TextView
-            android:id="@+id/tv100NotesLabel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Rs. 100"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/tvATMAmountLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:text="@string/label_atm_amount"
+                android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tv200NotesLabel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Rs. 200"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/tv100NotesLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/label_rs_100"
+                android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tv500NotesLabel"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Rs. 500"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/tv200NotesLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/label_rs_200"
+                android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tv2000NotesLabel"
-            android:layout_width="0dp"
+            <TextView
+                android:id="@+id/tv500NotesLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/label_rs_500"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv2000NotesLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/label_rs_2000"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lnrValues"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Rs. 2000"
-            android:textStyle="bold" />
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:id="@+id/tvATMAmount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+                android:gravity="center"
+                android:text="@{`Rs. `+transactions.transAmount}"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv100Notes"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@{``+transactions.notesOf100}" />
+
+            <TextView
+                android:id="@+id/tv200Notes"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@{``+transactions.notesOf200}" />
+
+            <TextView
+                android:id="@+id/tv500Notes"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@{``+transactions.notesOf500}" />
+
+            <TextView
+                android:id="@+id/tv2000Notes"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@{``+transactions.notesOf2000}" />
+
+        </LinearLayout>
+
 
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_marginTop="10dp"
-        android:id="@+id/lnrValues"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp">
-
-        <TextView
-            android:id="@+id/tvATMAmount"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.5"
-            android:gravity="center"
-            android:text="Rs. 50000" />
-
-        <TextView
-            android:id="@+id/tv100Notes"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="75" />
-
-        <TextView
-            android:id="@+id/tv200Notes"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="50" />
-
-        <TextView
-            android:id="@+id/tv500Notes"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="25" />
-
-        <TextView
-            android:id="@+id/tv2000Notes"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="10" />
-
-    </LinearLayout>
-
-
-</LinearLayout>
+</layout>

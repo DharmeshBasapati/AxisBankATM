@@ -18,19 +18,12 @@ class TransactionsAdapter(private val transactionsList: List<Transactions>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         with(holder) {
-            with(transactionsList[position]) {
-
-                rowItemTransactionsBinding.lnrHeaders.visibility = View.GONE
-                if (position == 0) {
-                    rowItemTransactionsBinding.lnrHeaders.visibility = View.VISIBLE
-                }
-
-                rowItemTransactionsBinding.tvATMAmount.text = transAmount.toString()
-                rowItemTransactionsBinding.tv100Notes.text = notesOf100.toString()
-                rowItemTransactionsBinding.tv200Notes.text = notesOf200.toString()
-                rowItemTransactionsBinding.tv500Notes.text = notesOf500.toString()
-                rowItemTransactionsBinding.tv2000Notes.text = notesOf2000.toString()
-
+            rowItemTransactionsBinding.apply {
+                if (position == 0)
+                    lnrHeaders.visibility = View.VISIBLE
+                else lnrHeaders.visibility =
+                    View.GONE
+                transactions = transactionsList[position]
             }
         }
     }

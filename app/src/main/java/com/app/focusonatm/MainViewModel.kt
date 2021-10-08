@@ -26,6 +26,8 @@ class MainViewModel(private val focusDao: FocusDao) : ViewModel() {
 
     val edtWithdrawAmount = MutableLiveData<String>()
 
+    val btnWithdrawAmountText = MutableLiveData("Withdraw")
+
     private val validWithdrawAmount = MutableLiveData<String>()
 
     val errorMessage = MutableLiveData("")
@@ -39,6 +41,12 @@ class MainViewModel(private val focusDao: FocusDao) : ViewModel() {
     fun getBankData(): LiveData<Bank> = bankData
 
     fun getTransactionsList(): LiveData<List<Transactions>> = transactionsData
+
+    fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) = if (s.isNotEmpty()) {
+        btnWithdrawAmountText.postValue("Withdraw Rs.$s")
+    } else {
+        btnWithdrawAmountText.postValue("Withdraw")
+    }
 
     fun validateAmount() {
 
@@ -104,13 +112,9 @@ class MainViewModel(private val focusDao: FocusDao) : ViewModel() {
     }
 
     fun fetchTransactionsListFromDB() {
-
         viewModelScope.launch(Dispatchers.IO) {
-
             transactionsData.postValue(focusDao.getAllTransactions())
-
         }
-
     }
 
     fun addNewTransactionToDB(withdrawAmount: Int) {
@@ -191,6 +195,5 @@ class MainViewModel(private val focusDao: FocusDao) : ViewModel() {
         currentNotesOf200 = 0
         currentNotesOf100 = 0
     }
-
 
 }

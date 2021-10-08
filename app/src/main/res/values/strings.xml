@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My ATM</string>
+    <string name="app_name">Axis Bank ATM</string>
     <string name="msg_enter_amount_in_multiples_of_100">Please enter amount in multiples of 100.</string>
     <string name="msg_insufficient_balance">Unable to withdraw due to insufficient balance in your account.</string>
     <string name="msg_enter_withdraw_amount">Please enter withdraw amount.</string>
