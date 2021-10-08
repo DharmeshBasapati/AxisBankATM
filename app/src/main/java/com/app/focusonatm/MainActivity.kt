@@ -73,19 +73,18 @@ class MainActivity : AppCompatActivity() {
 
         mainViewModel.getTransactionsList().observe(this, { transactionsList ->
 
-            val trans = transactionsList.last()
-            val bank = Bank(
-                2,
-                trans.transAmount,
-                trans.notesOf100,
-                trans.notesOf200,
-                trans.notesOf500,
-                trans.notesOf2000
-            )
-            binding.lastTransactionLayout.bankData = bank
-
             transactionsList?.let {
                 if (it.isNotEmpty()) {
+                    val trans = it.last()
+                    val bank = Bank(
+                        2,
+                        trans.transAmount,
+                        trans.notesOf100,
+                        trans.notesOf200,
+                        trans.notesOf500,
+                        trans.notesOf2000
+                    )
+                    binding.lastTransactionLayout.bankData = bank
                     updateTransactionsList(it)
                 }
             }
