@@ -1,4 +1,4 @@
-package com.app.focusonatm
+package com.app.axisbankatm
 
 import android.content.Context
 import android.os.Bundle
@@ -7,10 +7,10 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.app.focusonatm.databinding.ActivityMainBinding
-import com.app.focusonatm.room.builder.DatabaseBuilder
-import com.app.focusonatm.room.entity.Bank
-import com.app.focusonatm.room.entity.Transactions
+import com.app.axisbankatm.databinding.ActivityMainBinding
+import com.app.axisbankatm.room.builder.DatabaseBuilder
+import com.app.axisbankatm.room.entity.Bank
+import com.app.axisbankatm.room.entity.Transactions
 
 class MainActivity : AppCompatActivity() {
 
@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupViewModel() {
 
         mainViewModel = ViewModelProvider(
-            this, ViewModelFactory(DatabaseBuilder.getDBInstance(applicationContext).focusDao())
+            this, ViewModelFactory(DatabaseBuilder.getDBInstance(applicationContext).axisDao())
         ).get(MainViewModel::class.java)
 
         binding.mainViewModel = mainViewModel

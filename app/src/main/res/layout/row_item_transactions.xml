@@ -5,7 +5,7 @@
 
         <variable
             name="transactions"
-            type="com.app.focusonatm.room.entity.Transactions" />
+            type="com.app.axisbankatm.room.entity.Transactions" />
     </data>
 
     <LinearLayout

@@ -1,11 +1,11 @@
-package com.app.focusonatm.room.dao
+package com.app.axisbankatm.room.dao
 
 import androidx.room.*
-import com.app.focusonatm.room.entity.Bank
-import com.app.focusonatm.room.entity.Transactions
+import com.app.axisbankatm.room.entity.Bank
+import com.app.axisbankatm.room.entity.Transactions
 
 @Dao
-interface FocusDao {
+interface AxisDao {
 
     @Query("Select * from bank")
     fun getBankDetails(): Bank

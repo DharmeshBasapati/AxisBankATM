@@ -1,4 +1,4 @@
-package com.app.focusonatm
+package com.app.axisbankatm
 
 object BasicBankData {
 

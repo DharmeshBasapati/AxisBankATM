@@ -5,11 +5,11 @@
 
         <variable
             name="mainViewModel"
-            type="com.app.focusonatm.MainViewModel" />
+            type="com.app.axisbankatm.MainViewModel" />
 
         <variable
             name="bankData"
-            type="com.app.focusonatm.room.entity.Bank" />
+            type="com.app.axisbankatm.room.entity.Bank" />
 
     </data>
 

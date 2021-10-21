@@ -1,16 +1,16 @@
-package com.app.focusonatm
+package com.app.axisbankatm
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.focusonatm.room.dao.FocusDao
-import com.app.focusonatm.room.entity.Bank
-import com.app.focusonatm.room.entity.Transactions
+import com.app.axisbankatm.room.dao.AxisDao
+import com.app.axisbankatm.room.entity.Bank
+import com.app.axisbankatm.room.entity.Transactions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class MainViewModel(private val focusDao: FocusDao) : ViewModel() {
+class MainViewModel(private val axisDao: AxisDao) : ViewModel() {
 
     private var currentNotesOf100: Int = 0
     private var currentNotesOf200: Int = 0
@@ -80,11 +80,11 @@ class MainViewModel(private val focusDao: FocusDao) : ViewModel() {
 
         viewModelScope.launch(Dispatchers.IO) {
 
-            val initialBankData = focusDao.getBankDetails()
+            val initialBankData = axisDao.getBankDetails()
 
             if (initialBankData == null) {
 
-                focusDao.addNotesToBank(
+                axisDao.addNotesToBank(
                     Bank(
                         BasicBankData.BANK_ID,
                         BasicBankData.BANK_BALANCE,
@@ -97,7 +97,7 @@ class MainViewModel(private val focusDao: FocusDao) : ViewModel() {
 
             }
 
-            val updatedBankData = focusDao.getBankDetails()
+            val updatedBankData = axisDao.getBankDetails()
 
             notesOf100 = updatedBankData.notesOf100
             notesOf200 = updatedBankData.notesOf200
@@ -113,7 +113,7 @@ class MainViewModel(private val focusDao: FocusDao) : ViewModel() {
 
     fun fetchTransactionsListFromDB() {
         viewModelScope.launch(Dispatchers.IO) {
-            transactionsData.postValue(focusDao.getAllTransactions())
+            transactionsData.postValue(axisDao.getAllTransactions())
         }
     }
 
@@ -121,7 +121,7 @@ class MainViewModel(private val focusDao: FocusDao) : ViewModel() {
 
         viewModelScope.launch(Dispatchers.IO) {
 
-            focusDao.addTransactions(
+            axisDao.addTransactions(
                 Transactions(
                     transAmount = withdrawAmount,
                     notesOf100 = currentNotesOf100,
@@ -142,7 +142,7 @@ class MainViewModel(private val focusDao: FocusDao) : ViewModel() {
 
             totalAmountInBank -= withdrawAmount
 
-            focusDao.addNotesToBank(
+            axisDao.addNotesToBank(
                 Bank(
                     BasicBankData.BANK_ID,
                     totalAmountInBank,

@@ -1,11 +1,11 @@
-package com.app.focusonatm
+package com.app.axisbankatm
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.app.focusonatm.databinding.RowItemTransactionsBinding
-import com.app.focusonatm.room.entity.Transactions
+import com.app.axisbankatm.databinding.RowItemTransactionsBinding
+import com.app.axisbankatm.room.entity.Transactions
 
 class TransactionsAdapter(private val transactionsList: List<Transactions>) :
     RecyclerView.Adapter<TransactionsAdapter.ViewHolder>() {
